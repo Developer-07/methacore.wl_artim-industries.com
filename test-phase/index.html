@@ -1,0 +1,118 @@
+<head>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Arvo'>
+    <link rel="stylesheet" href="style.css">
+    <title>Methacore Test-Phase</title>
+</head>
+
+<body>
+
+    <section class="page_404" style="margin-top:40px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="col-sm-10 col-sm-offset-1  text-center">
+                        <div class="four_zero_four_bg" style="border-radius: 50%;">
+
+
+                        </div>
+
+                        <div class="contant_box_404">
+                            <h3 class="h2">
+                                Gib hier deinen Statuscode ein,
+                            </h3>
+
+                            <p>um zu sehen, ob die Testphase schon eröffnet ist.</p>
+
+                            <div style="display: block;">
+                                <label for="inp" class="inp">
+                                    <input type="text" id="inp" placeholder="&nbsp;">
+                                    <span class="label">Statuscode</span>
+                                    <span class="focus-bg"></span>
+                                </label>
+
+                            </div>
+                            <div style="display: block;">
+                                <code id="44"></code>
+                            </div>
+                            <input style="display:none" id="org">
+                            <button style="border:none;display: none;" class="link_405" id="continue"
+                                onclick="conti();">Weiter
+                                gehen -></button>
+                            <button style="border:none;" class="link_404" id="resume"
+                                onclick="checkCode(document.getElementById('inp').value);">Überprüfen -></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+<script>
+    function loadFile(filePath) {
+        var result = null;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", filePath, false);
+        xmlhttp.send();
+        if (xmlhttp.status == 200) {
+            result = xmlhttp.responseText;
+        }
+        return result;
+    }
+
+    function conti(org) {
+
+        code = document.getElementById("inp").value;
+        org = document.getElementById("org").value;
+
+
+        url = loadFile('../../url.txt');
+
+
+        fetch(url, { mode: 'no-cors' }).then(r => {
+
+            window.location.href = "https://artim-industries.com/redirect/?additions=k:methacore_testphase%7Ca:phaseCode," + code + ";org," + org + "";
+
+
+        })
+            .catch(e => {
+                window.location.href = 'error.html';
+            });
+
+        function UrlExists(url) {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', url, false);
+            http.send();
+            if (http.status != 404)
+                return true;
+            else
+                return false;
+        }
+
+    }
+
+    function checkCode(code) {
+        fileContent = loadFile("status.json");
+        Json = JSON.parse(fileContent);
+
+        if (Json[code]) {
+            organisation = Json[code]["organisation"];
+            status = Json[code]["status"];
+            console.log(status);
+
+            if (status == "true") {
+                document.getElementById("44").innerHTML = "Dieser Code gehört zur " + organisation + " Organisation."
+                console.log("Continue");
+                document.getElementById("resume").style.display = "none";
+                document.getElementById("org").value = organisation;
+                document.getElementById("continue").style.display = "inline-block";
+            } else {
+                document.getElementById("44").innerHTML = "Die Test-Phase für die " + organisation + " Organisation ist noch nicht eröffnet."
+            }
+        } else {
+            document.getElementById("44").innerHTML = "Dieser Statuscode ist nicht verfügbar!"
+        }
+    }
+</script>
